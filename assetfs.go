@@ -10,6 +10,7 @@ import (
 	"path"
 	"path/filepath"
 	"time"
+	"strings"
 )
 
 var (
@@ -129,10 +130,13 @@ type AssetFS struct {
 	AssetDir func(path string) ([]string, error)
 	// Prefix would be prepended to http requests
 	Prefix string
+	// TrimPrefix would be trimmed to http requests
+	TrimPrefix string
 }
 
 func (fs *AssetFS) Open(name string) (http.File, error) {
 	name = path.Join(fs.Prefix, name)
+	name = strings.TrimPrefix(name, fs.TrimPrefix)
 	if len(name) > 0 && name[0] == '/' {
 		name = name[1:]
 	}
